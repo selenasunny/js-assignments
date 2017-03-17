@@ -33,7 +33,14 @@
  *
  */
 function* get99BottlesOfBeer() {
-    throw new Error('Not implemented');
+    let line = (n => n == 1 ? `1 bottle` : `${n} bottles`);
+    for (let i = 99; i > 0; i--) {
+        yield `${line(i)} of beer on the wall, ${line(i)} of beer.`;
+        if (i > 1) yield `Take one down and pass it around, ${line(i - 1)} of beer on the wall.`;
+        else yield `Take one down and pass it around, no more bottles of beer on the wall.`;
+    }
+    yield 'No more bottles of beer on the wall, no more bottles of beer.';
+    yield 'Go to the store and buy some more, 99 bottles of beer on the wall.';   
 }
 
 
@@ -47,7 +54,15 @@ function* get99BottlesOfBeer() {
  *
  */
 function* getFibonacciSequence() {
-    throw new Error('Not implemented');
+    let n = 0;
+    let m = 1;
+    let s = 0;  
+    yield n; 
+    yield m;
+    while(true) {
+    yield s = n+m;
+    n = m; m = s;
+    }
 }
 
 
@@ -82,10 +97,17 @@ function* getFibonacciSequence() {
  *
  */
 function* depthTraversalTree(root) {
-    throw new Error('Not implemented');
+    let tree = [root];
+    while (tree.length) {
+        let node = tree.pop();
+        yield node;
+        if (node.children){
+            tree.push(...node.children.reverse());
+        }
+    }
 }
-
-
+  
+ 
 /**
  * Traverses a tree using the breadth-first strategy
  * See details: https://en.wikipedia.org/wiki/Breadth-first_search
@@ -108,7 +130,13 @@ function* depthTraversalTree(root) {
  *
  */
 function* breadthTraversalTree(root) {
-    throw new Error('Not implemented');
+    let tree = [root];
+    for (let node of tree) {        
+        yield node;
+        if (node.children){
+            tree.push(...node.children);
+        }
+    }
 }
 
 
@@ -126,10 +154,33 @@ function* breadthTraversalTree(root) {
  *   [ 1, 3, 5, ... ], [ -1 ] => [ -1, 1, 3, 5, ...]
  */
 function* mergeSortedSequences(source1, source2) {
-    throw new Error('Not implemented');
-}
+    let sequence1 = source1();  
+    let sequence2 = source2();
+    let gen1 = sequence1.next();
+    let gen2 = sequence2.next();
 
+    while (!gen1.done&& !gen2.done) {
+        if (gen1.value < gen2.value) {
+            yield  gen1.value;
+            gen1 = sequence1.next();
+        } else {
+            yield  gen2.value;
+            gen2 = sequence2.next();
+        }
+    }
+    while(!gen1.done){
+        yield  gen1.value;
+        gen1 = sequence1.next();
+    }
+    while(!gen2.done){
+        yield  gen2.value;
+        gen2 = sequence2.next();
+    }
 
+}   
+    
+  
+   
 module.exports = {
     get99BottlesOfBeer: get99BottlesOfBeer,
     getFibonacciSequence: getFibonacciSequence,

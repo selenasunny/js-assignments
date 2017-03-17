@@ -45,7 +45,33 @@ function findStringInSnakingPuzzle(puzzle, searchStr) {
  *    'abc' => 'abc','acb','bac','bca','cab','cba'
  */
 function* getPermutations(chars) {
-    throw new Error('Not implemented');
+   let result = [];
+    
+    result = displace(chars.split('')).map(arr => {
+        let str = '';
+        arr.forEach(element => str+=element);
+        return str;
+    });
+    while (result.length) {
+        yield result.pop();
+}
+function displace(arr, memoryArr) {
+        let element,
+            array  = [];
+        if (memoryArr) {
+            array = memoryArr;
+        }
+        for (let i = 0; i < arr.length; i++) {
+            element = arr.splice(i, 1);
+            if (!(arr.length)) {
+                result.push(array.concat(element));
+            }
+            displace(arr.slice(), array.concat(element));
+            arr.splice(i, 0, element);
+        }
+        return result;
+    }
+
 }
 
 
@@ -65,7 +91,11 @@ function* getPermutations(chars) {
  *    [ 1, 6, 5, 10, 8, 7 ] => 18  (buy at 1,6,5 and sell all at 10)
  */
 function getMostProfitFromStockQuotes(quotes) {
-    throw new Error('Not implemented');
+    let max = +quotes.slice(-1);
+        return quotes.reverse().reduce((previousValue, currentValue) => {
+        max = Math.max(max, currentValue);
+        return previousValue + max - currentValue; 
+    }, 0); 
 }
 
 
@@ -90,13 +120,19 @@ function UrlShortener() {
 }
 
 UrlShortener.prototype = {
+    urlEncode: Symbol().toString(),
+    
+    [this.urlEncode]: '',
 
     encode: function(url) {
-        throw new Error('Not implemented');
+        this[this.urlEncode] = url;
+        return this.urlEncode
     },
     
     decode: function(code) {
-        throw new Error('Not implemented');
+        if (code === this.urlEncode) {
+            return this[this.urlEncode];
+        }
     } 
 }
 

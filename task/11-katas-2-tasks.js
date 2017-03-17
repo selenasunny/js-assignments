@@ -34,8 +34,22 @@
  *
  */
 function parseBankAccount(bankAccount) {
-    throw new Error('Not implemented');
-}
+    function transform(str) {
+        let result = '';
+        let string = str.split('\n').slice(0, -1);
+        for (let j = 0; j < string[0].length; j++)
+        for (let i = 0; i < string.length; i++) {
+            result += string[i][j];
+        } 
+        return result.match(/.{1,9}/g);
+    };
+    let digits =  ' _     _  _     _  _  _  _  _ \n' +
+                  '| |  | _| _||_||_ |_   ||_||_|\n' +
+                  '|_|  ||_  _|  | _||_|  ||_| _|\n';
+    let map = new Map(transform(digits).map((e, i) => [e, i]));
+return transform(bankAccount).reduce((p, e) => p * 10 + map.get(e), 0);
+  
+ }
 
 
 /**
@@ -63,10 +77,11 @@ function parseBankAccount(bankAccount) {
  *                                                                                                'characters.'
  */
 function* wrapText(text, columns) {
-    throw new Error('Not implemented');
+    let string = text.match(new RegExp(`.{1,${columns}}( |$)`, 'g'));
+    for (let sym of string) {
+    yield sym.trim();
+    }
 }
-
-
 /**
  * Returns the rank of the specified poker hand.
  * See the ranking rules here: https://en.wikipedia.org/wiki/List_of_poker_hands.
@@ -100,43 +115,35 @@ const PokerRank = {
 }
 
 function getPokerHandRank(hand) {
-    throw new Error('Not implemented');
+    let lears = '♥♠♦♣';
+    let digit = 'A234567891JQK';
+    let learsArray = Array.from(lears, ()=>0),
+        digitArray = Array.from(digit, ()=>0);
+    for (let card of hand) {
+        learsArray[lears.indexOf(card.slice(-1))]++;
+        digitArray[digit.indexOf(card[0])]++;
+    }
+    digitArray.push(digitArray[0]); 
+    
+    let learsString = learsArray.join(''),
+        digitString = digitArray.join('');
+    
+    return (digitString.indexOf('11111') != -1) && 
+           (learsString.indexOf('5') != -1) ? PokerRank.StraightFlush :
+           (digitString.indexOf('4') != -1) ? PokerRank.FourOfKind :
+           (digitString.indexOf('2') != -1) && 
+           (digitString.indexOf('3') != -1) ? PokerRank.FullHouse :
+           (learsString.indexOf('5') != -1) ? PokerRank.Flush :
+           (digitString.indexOf('11111') != -1) ? PokerRank.Straight :
+           (digitString.indexOf('3') != -1) ? PokerRank.ThreeOfKind :
+           (digitString.match(/2.*2.+/)) ? PokerRank.TwoPairs :
+           (digitString.indexOf('2') != -1) ? PokerRank.OnePair :
+           PokerRank.HighCard; 
 }
 
 
-/**
- * Returns the rectangles sequence of specified figure.
- * The figure is ASCII multiline string comprised of minus signs -, plus signs +, vertical bars | and whitespaces.
- * The task is to break the figure in the rectangles it is made of.
- *
- * NOTE: The order of rectanles does not matter.
- * 
- * @param {string} figure
- * @return {Iterable.<string>} decomposition to basic parts
- * 
- * @example
- *
- *    '+------------+\n'+
- *    '|            |\n'+
- *    '|            |\n'+              '+------------+\n'+
- *    '|            |\n'+              '|            |\n'+         '+------+\n'+          '+-----+\n'+
- *    '+------+-----+\n'+       =>     '|            |\n'+     ,   '|      |\n'+     ,    '|     |\n'+
- *    '|      |     |\n'+              '|            |\n'+         '|      |\n'+          '|     |\n'+
- *    '|      |     |\n'               '+------------+\n'          '+------+\n'           '+-----+\n'
- *    '+------+-----+\n'
- *
- *
- *
- *    '   +-----+     \n'+
- *    '   |     |     \n'+                                    '+-------------+\n'+
- *    '+--+-----+----+\n'+              '+-----+\n'+          '|             |\n'+
- *    '|             |\n'+      =>      '|     |\n'+     ,    '|             |\n'+
- *    '|             |\n'+              '+-----+\n'           '+-------------+\n'
- *    '+-------------+\n'
- */
-function* getFigureRectangles(figure) {
-   throw new Error('Not implemented');
-}
+
+
 
 
 module.exports = {

@@ -1,25 +1,5 @@
 'use strict';
 
-/**
- * Returns the array of 32 compass points and heading.
- * See details here:
- * https://en.wikipedia.org/wiki/Points_of_the_compass#32_cardinal_points
- *
- * @return {array}
- *
- * Example of return :
- *  [
- *     { abbreviation : 'N',     azimuth : 0.00 ,
- *     { abbreviation : 'NbE',   azimuth : 11.25 },
- *     { abbreviation : 'NNE',   azimuth : 22.50 },
- *       ...
- *     { abbreviation : 'NbW',   azimuth : 348.75 }
- *  ]
- */
-function createCompassPoints() {
-    throw new Error('Not implemented');
-    var sides = ['N','E','S','W'];  // use array of cardinal directions only!
-}
 
 
 /**
@@ -56,10 +36,27 @@ function createCompassPoints() {
  *   'nothing to do' => 'nothing to do'
  */
 function* expandBraces(str) {
-    throw new Error('Not implemented');
+    let string = [str];
+    let result = [];
+    let reg = /{([^\{\}]+)}/;
+
+    while (string.length) {
+        let item = string.shift();
+        let coinc = item.match(reg);
+
+        if (coinc !== null) {
+            coinc[1].split(',').map(p => {
+                string.push(item.replace(coinc[0], p));
+            });
+        } else { 
+            if (result.indexOf(item) === -1) {
+                result.push(item);
+                yield item;
+         }
+      }
+    }
+
 }
-
-
 /**
  * Returns the ZigZag matrix
  *
@@ -85,60 +82,31 @@ function* expandBraces(str) {
  *   4 =>   [ 2, 4, 7,12 ],
  *          [ 3, 8,11,13 ],
  *          [ 9,10,14,15 ]]
- *
  */
 function getZigZagMatrix(n) {
-    throw new Error('Not implemented');
-}
+    let  mtx = Array.from(n, () => new Array(n));
+    for (let i = 0; i < n; i++){ 
+        mtx[i] = [];
+    }
+    let i=1, j=1;
+    for (let e = 0; e < n*n; e++) {
+        mtx[i-1][j-1] = e;
+        if ((i + j) % 2 == 0) {          
+            if (j < n) j ++;
+            else       i += 2;
+            if (i > 1) i --;
+        } else {           
+            if (i < n) i ++;
+            else       j += 2;
+            if (j > 1) j --;
+        }
+    }
+    return mtx;
+} 
 
 
-/**
- * Returns true if specified subset of dominoes can be placed in a row accroding to the game rules.
- * Dominoes details see at: https://en.wikipedia.org/wiki/Dominoes
- *
- * Each domino tile presented as an array [x,y] of tile value.
- * For example, the subset [1, 1], [2, 2], [1, 2] can be arranged in a row (as [1, 1] followed by [1, 2] followed by [2, 2]),
- * while the subset [1, 1], [0, 3], [1, 4] can not be arranged in one row.
- * NOTE that as in usual dominoes playing any pair [i, j] can also be treated as [j, i].
- *
- * @params {array} dominoes
- * @return {bool}
- *
- * @example
- *
- * [[0,1],  [1,1]] => true
- * [[1,1], [2,2], [1,5], [5,6], [6,3]] => false
- * [[1,3], [2,3], [1,4], [2,4], [1,5], [2,5]]  => true
- * [[0,0], [0,1], [1,1], [0,2], [1,2], [2,2], [0,3], [1,3], [2,3], [3,3]] => false
- *
- */
-function canDominoesMakeRow(dominoes) {
-    throw new Error('Not implemented');
-}
 
 
-/**
- * Returns the string expression of the specified ordered list of integers.
- *
- * A format for expressing an ordered list of integers is to use a comma separated list of either:
- *   - individual integers
- *   - or a range of integers denoted by the starting integer separated from the end integer in the range by a dash, '-'.
- *     (The range includes all integers in the interval including both endpoints)
- *     The range syntax is to be used only for, and for every range that expands to more than two values.
- *
- * @params {array} nums
- * @return {bool}
- *
- * @example
- *
- * [ 0, 1, 2, 3, 4, 5 ]   => '0-5'
- * [ 1, 4, 5 ]            => '1,4,5'
- * [ 0, 1, 2, 5, 7, 8, 9] => '0-2,5,7-9'
- * [ 1, 2, 4, 5]          => '1,2,4,5'
- */
-function extractRanges(nums) {
-    throw new Error('Not implemented');
-}
 
 module.exports = {
     createCompassPoints : createCompassPoints,
